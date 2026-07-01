@@ -23,6 +23,7 @@ class TablaHashAbierta{
 private:
   Nodo<TipoClave,TipoValor>** tabla;
   Largo largoTabla;
+  Largo cantidadElementos;
   //Evaluamos las condiciones para el tipo de hashing a utilizar
   Largo calcularIndice(const TipoClave& clave){
     
@@ -58,7 +59,7 @@ private:
 public:
   TablaHashAbierta(Largo largo){
     largoTabla = largo;
-   
+    cantidadElementos = 0;
     tabla = new Nodo<TipoClave,TipoValor>*[largoTabla];
     
     for(Largo i = 0; i<largoTabla; i++){
@@ -109,10 +110,11 @@ public:
     Nodo<TipoClave, TipoValor>* nuevo = new Nodo<TipoClave,TipoValor>(clave,valor);
     nuevo->siguiente = tabla[indice];
     tabla[indice] = nuevo;
+    cantidadElementos++;
     return true;
   }
 
-  bool buscar(const TipoClave& clave){
+  Nodo<TipoClave,TipoValor>* buscar(const TipoClave& clave){
     //Calculamos el indice en el cual deberia estar nuestra clave
     Largo indice = calcularIndice(clave);
 
@@ -121,11 +123,56 @@ public:
     Nodo<TipoClave,TipoValor>* actual = tabla[indice];
     while(actual!= nullptr){
       if(actual-> clave == clave){
-	return true;
+	return actual;
       }
       actual = actual->siguiente;
     }
+    return nullptr;
+  }
+
+  //Devolvemos la el valor usando la referencia dada por "obtener"
+  TipoValor obtener(const TipoClave& clave){
+    Nodo<TipoClave, TipoValor>* nodo = buscar(clave);
+    
+    if(nodo != nullptr){
+      return nodo-> valor;
+    }
+    return TipoValor{};
+  }
+
+  
+  bool eliminar(const TipoClave& clave){
+    Largo indice = calcularIndice(clave);
+    Nodo<TipoClave, TipoValor>* actual = tabla[indice];
+    Nodo<TipoClave, TipoValor>* anterior = nullptr;
+
+    //Recorremos la lista buscando la clave y reorganizamos los punteros para no romper la lista enlazada
+    while(actual!= nullptr){
+      
+      if(actual->clave == clave){
+	
+	if(anterior == nullptr){
+	  tabla[indice] = actual-> siguiente;
+	}
+	else{
+	  anterior->siguiente = actual->siguiente;
+	}
+	delete actual;
+	cantidadElementos--;
+	return true;
+      }
+      anterior = actual;
+      actual = actual->siguiente;
+    }
     return false;
+  }
+
+  Largo size(){
+    return cantidadElementos;
+  }
+
+  double factorCarga(){
+    return (double)cantidadElementos / largoTabla;
   }
     
 };
