@@ -1,5 +1,6 @@
 #include <iostream>
-
+#include "funciones_hash.h"
+using namespace std;
 
 
 //Definimos la estructura nodo
@@ -24,6 +25,8 @@ private:
   Nodo<TipoClave,TipoValor>** tabla;
   Largo largoTabla;
   Largo cantidadElementos;
+
+  
   //Evaluamos las condiciones para el tipo de hashing a utilizar
   Largo calcularIndice(const TipoClave& clave){
     
@@ -51,6 +54,69 @@ private:
       cout << "Tipo de hash Invalido (Seleccione valores de 1-4)" << endl;
       return 0;
     }
+  }
+
+  
+  //Implementacion de rehash cuando sea necesaria
+  void rehash(){
+    //Calculamos el largo nuevo y guardamos el viejo
+    Largo largoViejo = largoTabla;
+    Largo nuevoLargo = siguientePrimo(largoTabla * 2);
+    largoTabla = nuevoLargo;
+    
+    //Creamos otra tabla con nuevo largo y seteamos sus referencias  a null
+    
+    Nodo<TipoClave,TipoValor>** nuevaTabla = new Nodo<TipoClave, TipoValor>*[nuevoLargo];
+    for(Largo i = 0; i<nuevoLargo; i++)
+      nuevaTabla[i] = nullptr;
+
+    // Movemos todos los nodos de la tabla antigua a la nueva recalculando los indices con el nuevo largo 
+    for(Largo i = 0; i<largoViejo; i++){
+      Nodo<TipoClave,TipoValor>* actual = tabla[i];
+
+      while(actual){
+	Nodo<TipoClave,TipoValor>* siguiente = actual->siguiente;
+	Largo nuevoIndice = calcularIndice(actual->clave);
+
+	actual->siguiente = nuevaTabla[nuevoIndice];
+	nuevaTabla[nuevoIndice] = actual;
+
+	actual = siguiente;
+      }
+    }
+    //Eliminamos la tabla vieja y asignamos la nueva
+    delete[] tabla;
+
+    tabla = nuevaTabla;
+    
+  }
+
+  bool esPrimo(Largo n) {
+    if (n <= 1) return false;
+    if (n == 2) return true;
+    if (n % 2 == 0) return false;
+
+    for (Largo i = 3; i * i <= n; i += 2) {
+      if (n % i == 0)
+	return false;
+    }
+
+    return true;
+  }
+
+  Largo siguientePrimo(Largo n) {
+    if (n <= 2)
+      return 2;
+
+    n++;
+
+    if (n % 2 == 0)
+      n++;
+
+    while (!esPrimo(n))
+      n += 2;
+
+    return n;
   }
     
   
@@ -105,6 +171,12 @@ public:
       
       actual = actual-> siguiente;
     }
+
+    if(factorCarga() > 0.75){
+      rehash();
+      indice = calcularIndice(clave);
+    }
+ 
 
     //En caso de no encontrar la misma clave, creamos un nuevo nodo con la informacion a insertar y lo insertamos al inicio para asegurar tiempo constante en insercion 
     Nodo<TipoClave, TipoValor>* nuevo = new Nodo<TipoClave,TipoValor>(clave,valor);
@@ -171,8 +243,9 @@ public:
     return cantidadElementos;
   }
 
+  //Funcion que devuelve el factor de carga considerando un elemento mas para corroborar entes de la insercion
   double factorCarga(){
-    return (double)cantidadElementos / largoTabla;
+    return (double)(cantidadElementos + 1) / largoTabla;
   }
     
 };
