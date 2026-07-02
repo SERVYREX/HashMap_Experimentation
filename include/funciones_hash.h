@@ -1,3 +1,4 @@
+#pragma once
 #include <iostream>
 #include <string>
 using namespace std;
@@ -9,7 +10,6 @@ using namespace std;
 
 //Usamos un template para tratar con numeros muy grandes
 template <typename TipoClave, typename Largo>
-
 //Funcion Hash clasica usando modulo
 Largo modulo(TipoClave clave, Largo largoTabla){
   return clave % largoTabla;

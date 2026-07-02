@@ -1,3 +1,4 @@
+#pragma once
 #include <iostream>
 #include "funciones_hash.h"
 using namespace std;

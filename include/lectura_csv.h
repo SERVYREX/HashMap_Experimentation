@@ -4,12 +4,13 @@
 #include <string>
 #include <vector>
 #include "tabla_hash_abierta.h"
+#include "tabla_hash_cerrada.h"
 
 using namespace std;
 
 // Convertimos la función en un template para que acepte cualquier TipoClave y TipoHash
-template <typename TipoClave, int TipoHash>
-void cargarUsuariosDesdeCSV(const string& rutaArchivo, TablaHashAbierta<TipoClave, int, unsigned long long, TipoHash>& tabla, bool usarScreenName) {
+template <typename TipoClave, typename TipoTabla>
+void cargarUsuariosDesdeCSV(const string& rutaArchivo, TipoTabla& tabla, bool usarScreenName) {
     ifstream archivo(rutaArchivo);
     
     if (!archivo.is_open()) {

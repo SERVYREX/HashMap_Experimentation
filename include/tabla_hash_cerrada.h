@@ -1,23 +1,18 @@
+#pragma once
 #include <iostream>
-#include <vector>
+#include <vector> 
 #include "funciones_hash.h"
 using namespace std;
 
 template<typename TipoClave, typename TipoValor>
-struct Nodo{
+struct NodoC{
   TipoClave clave;
   TipoValor valor;
   bool eliminado = false;
 
-  Nodo(){
-    clave = 0;
-    valor = 0;
-  }
-  
-  Nodo(const TipoClave& c, const TipoValor& v){
-    clave = c;
-    valor = v;
-    eliminado = false;
+  NodoC(){
+    clave = TipoClave{};
+    valor = TipoValor{};
   }
 };
 
@@ -27,7 +22,7 @@ class TablaHashCerrada {
 private:
   Largo largoTabla;
   Largo cantidadElementos;
-  vector<Nodo<TipoClave, TipoValor>> tabla; 
+  vector<NodoC<TipoClave, TipoValor>> tabla; 
   Largo saltoPrimo;
 
   // Evaluamos las condiciones para el tipo de hashing a utilizar
@@ -64,19 +59,19 @@ private:
   
   void rehash() {
     Largo antiguoLargo = largoTabla;
-    vector<Nodo<TipoClave, TipoValor>> tablaAntigua = tabla;
+    vector<NodoC<TipoClave, TipoValor>> tablaAntigua = tabla;
 
     // Calculamos el nuevo tamaño de la tabla y actualizamos los primos necesarios
     largoTabla = siguientePrimo(largoTabla * 2);
     saltoPrimo = primoMenor(largoTabla);
     
     // Reiniciamos el contenedor principal vaciándolo por completo
-    tabla.assign(largoTabla, Nodo<TipoClave, TipoValor>());
+    tabla.assign(largoTabla, NodoC<TipoClave, TipoValor>());
     cantidadElementos = 0;
 
     // Reinsertamos todos los elementos válidos que estaban en la vieja tabla
     for (Largo i = 0; i < antiguoLargo; i++) {
-      if (tablaAntigua[i].clave != 0 && !tablaAntigua[i].eliminado) {
+      if (tablaAntigua[i].clave != TipoClave{} && !tablaAntigua[i].eliminado) {
         insertar(tablaAntigua[i].clave, tablaAntigua[i].valor);
       }
     }
@@ -135,7 +130,7 @@ public:
       Largo indice = calcularIndice(clave, intento);
 
       // Celda vacía disponible
-      if(tabla[indice].clave == 0 && !tabla[indice].eliminado){
+      if(tabla[indice].clave == TipoClave{} && !tabla[indice].eliminado){
         if(posicionInsertar == -1)
 	  posicionInsertar = indice;
         break; 
@@ -167,19 +162,19 @@ public:
     return false; 
   }
   
-  Nodo<TipoClave,TipoValor> buscar(const TipoClave& clave){
+  NodoC<TipoClave,TipoValor>* buscar(const TipoClave& clave){
     Largo intento = 0;
     
     while(intento < largoTabla){
       Largo indice = calcularIndice(clave, intento);
       
       // Si la celda está vacía y nunca se ha usado, el elemento no existe
-      if(tabla[indice].clave == 0 && !tabla[indice].eliminado){
+      if(tabla[indice].clave == TipoClave{} && !tabla[indice].eliminado){
         return nullptr;
       }
       
       if(tabla[indice].clave == clave && !tabla[indice].eliminado){
-        return tabla[indice]; // Retornamos el nodo que almacenada a la clave y su valor
+        return &tabla[indice]; // Retornamos el nodo que almacenada a la clave y su valor
       }
       
       intento++;
@@ -188,7 +183,7 @@ public:
   }
   
   TipoValor obtener(const TipoClave& clave){
-    Nodo<TipoClave, TipoValor> nodo = buscar(clave);
+    NodoC<TipoClave, TipoValor>* nodo = buscar(clave);
     
     if(nodo != nullptr){
       return nodo->valor;
@@ -202,12 +197,12 @@ public:
     while(intento < largoTabla){
       Largo indice = calcularIndice(clave, intento);
       
-      if(tabla[indice].clave == 0 && !tabla[indice].eliminado){
+      if(tabla[indice].clave == TipoClave{} && !tabla[indice].eliminado){
         return false; // No existe
       }
       
       if(tabla[indice].clave == clave && !tabla[indice].eliminado){
-        tabla[indice].clave = 0;
+        tabla[indice].clave = TipoClave{};
         tabla[indice].eliminado = true;
         cantidadElementos--;
         return true;
