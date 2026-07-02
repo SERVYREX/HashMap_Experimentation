@@ -14,11 +14,13 @@ template <typename TipoClave, typename Largo>
 Largo modulo(TipoClave clave, Largo largoTabla){
   return clave % largoTabla;
 }
+
 //Funcion hash usando modulo 2, necesaria en casos de double hashing
 template <typename TipoClave, typename Largo>
 Largo modulo_h2(TipoClave clave, Largo saltoPrimo){
   return saltoPrimo - (clave % saltoPrimo);
 }
+
 //Funcion para doble hashing basada en intentos
 template <typename TipoClave, typename Largo>
 Largo doubleHashModulo(TipoClave clave, int intento, Largo largoTabla, Largo saltoPrimo){
