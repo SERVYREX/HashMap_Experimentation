@@ -1,8 +1,0 @@
-#include <iostream>
-
-using namespace std;
-template<TipoClave>
-
-int modulo(TipoClave clave, int largo){
-  return clave % largo;
-}

@@ -21,7 +21,7 @@ Largo modulo_h2(TipoClave clave, Largo saltoPrimo){
 }
 //Funcion para doble hashing basada en intentos
 template <typename TipoClave, typename Largo>
-Largo doubleHashModulo(TipoClave clave, int intento, Largo largoTabla, Largo saltoPrimo){
+Largo doubleHashModulo(TipoClave clave, Largo intento, Largo largoTabla, Largo saltoPrimo){
   Largo h1 = modulo(clave,largoTabla);
   Largo h2 = modulo_h2(clave, saltoPrimo);
   return (h1 + (intento*h2))% largoTabla;
@@ -49,12 +49,21 @@ Largo hashMult_h2(TipoClave clave, Largo saltoPrimo){
 
 //Funcion para doble hashing basada en intentos
 template <typename TipoClave, typename Largo>
-Largo doubleHashMult(TipoClave clave, int intento, Largo largoTabla, Largo saltoPrimo){
+Largo doubleHashMult(TipoClave clave, Largo intento, Largo largoTabla, Largo saltoPrimo){
   Largo h1 = hashMult(clave, largoTabla);
   Largo h2 = hashMult_h2(clave, saltoPrimo);
   return (h1 + intento*h2)% largoTabla;
 }
 
+template <typename TipoClave, typename Largo>
+Largo linearProbing(TipoClave clave, Largo intento, Largo largoTabla){
+  return (clave + intento) % largoTabla;
+}
+
+template <typename TipoClave, typename Largo>
+Largo quadraticProbing(TipoClave clave, Largo intento, Largo largoTabla){
+  return (clave + intento*intento) % largoTabla;
+}
 
 
 
@@ -140,6 +149,31 @@ Largo doubleHashStringMult(const string& clave, Largo intento, Largo largoTabla,
 
     return (h1 + intento * h2) % largoTabla;
 }
+
+template <typename Largo>
+Largo linearProbingString(const string& clave, Largo intento, Largo largoTabla){
+  unsigned long long hash = 0;
+  unsigned long long base = 31;
+
+  for(char c : clave) {
+    hash = hash * base + static_cast<unsigned long long>(c);
+  }
+  return (hash + intento) % largoTabla;
+}
+
+template <typename Largo>
+Largo quadraticProbingString(const string& clave, Largo intento, Largo largoTabla){
+  unsigned long long hash = 0;
+  unsigned long long base = 31;
+
+  for(char c : clave) {
+    hash = hash * base + static_cast<unsigned long long>(c);
+  }
+  return (hash + intento*intento) % largoTabla;
+}
+
+
+
 
 
 
