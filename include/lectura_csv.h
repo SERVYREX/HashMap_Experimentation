@@ -3,6 +3,7 @@
 #include <sstream>
 #include <string>
 #include <vector>
+#include <unordered_map>
 #include "tabla_hash_abierta.h"
 #include "tabla_hash_cerrada.h"
 
@@ -71,6 +72,84 @@ void cargarUsuariosDesdeCSV(const string& rutaArchivo, TipoTabla& tabla, bool us
                     int frecuenciaActual = tabla.obtener(clave);
                     tabla.insertar(clave, frecuenciaActual + 1);
                     
+                    lineasProcesadas++;
+                } catch (const invalid_argument& e) {
+                    cerr << "Error: Se intento parsear un texto no numerico en la linea " << lineasProcesadas + 2 
+                         << ". Valor de columna: " << campos[columnaObjetivo] << endl;
+                } catch (const out_of_range& e) {
+                    cerr << "El ID numerico es demasiado grande en la linea " << lineasProcesadas + 2 << endl;
+                }
+            }
+            campos.clear();
+            campoActual = "";
+        }
+    }
+    archivo.close();
+    cout << "Archivo procesado exitosamente. Se registraron " << lineasProcesadas << " entradas." << endl;
+}
+
+
+template <typename TipoClave>
+void cargarUsuariosDesdeCSV(const string& rutaArchivo, unordered_map<TipoClave, int>& mapa, bool usarScreenName) {
+    ifstream archivo(rutaArchivo);
+    
+    if (!archivo.is_open()) {
+        cerr << "Error: No se pudo abrir el archivo " << rutaArchivo << endl;
+        return;
+    }
+
+    string linea;
+    vector<string> campos;
+    string campoActual = "";
+    bool enComillas = false;
+    int lineasProcesadas = 0;
+    bool primeraFila = true;
+
+    // user_id = 5, user_screen_name = 7
+    size_t columnaObjetivo;
+    if(usarScreenName) {
+        columnaObjetivo = 7; // Columna para screen_name
+    } else {
+        columnaObjetivo = 5; // Columna para user_id
+    }
+
+    while (getline(archivo, linea)) {
+        for (size_t i = 0; i < linea.length(); ++i) {
+            char c = linea[i];
+
+            if (c == '"') {
+                enComillas = !enComillas; 
+            } else if (c == ',' && !enComillas) {
+                campos.push_back(campoActual);
+                campoActual = "";
+            } else {
+                campoActual += c;
+            }
+        }
+
+        if (enComillas) {
+            campoActual += "\n";
+        } else {
+            campos.push_back(campoActual); 
+
+            if (primeraFila) {
+                primeraFila = false;
+            } else if (campos.size() > columnaObjetivo) {
+                try {
+                    TipoClave clave;
+
+                    // Evaluamos el tipo de dato que espera el unordered_map
+                    if constexpr (is_same_v<TipoClave, unsigned long long>) {
+                        clave = stoull(campos[columnaObjetivo]);
+                    } 
+                    else if constexpr (is_same_v<TipoClave, string>) {
+                        clave = campos[columnaObjetivo];
+                    }
+
+                    // Si la clave no existe, la crea con valor 0 y le suma 1.
+                    // Si ya existe, simplemente le suma 1 a su frecuencia actual.
+                    mapa[clave]++;
+
                     lineasProcesadas++;
                 } catch (const invalid_argument& e) {
                     cerr << "Error: Se intento parsear un texto no numerico en la linea " << lineasProcesadas + 2 
