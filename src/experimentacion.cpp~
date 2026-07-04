@@ -1,0 +1,43 @@
+#include <iostream>
+#include "../tabla_hash_abierta.h"
+#include "../lectura.csv"
+
+using namespace std;
+
+int main(){
+
+  //Ruta del dataset a utilizar
+  string data = "../Data/auspol2019.csv";
+
+  //4 instancias de tablas con hashing abierto con 2 funciones hash distintas para cada tipo de clave 
+  
+  TablaHashAbierta<int, int, int, 1> hashAbierto1;
+  TablaHashAbierta<int, int, int, 2> hashAbierto2;
+  TablaHashAbierta<string, int, int, 3> hashAbierto3;
+  TablaHashAbierta<string, int, int, 4> hashAbierto4;
+
+  //Construccion de la tabla hash
+  
+  cargarUsuariosDesdeCSV(data, hashAbierto1, false);
+  cargarUsuariosDesdeCSV(data, hashAbierto2, false);
+  cargarUsuariosDesdeCSV(data, hashAbierto3, true);
+  cargarUsuariosDesdeCSV(data, hashAbierto4, true);
+
+  cout<<hashAbierto1.obtener(92484856) << endl;
+  cout<<hashAbierto2.obtener(92484856) << endl;
+  cout<<hashAbierto3.obtener("jocksjig") << endl;
+  cout<<hashAbierto4.obtener("jocksjig") << endl;
+  
+  
+  
+
+
+
+
+
+
+
+
+
+
+}
