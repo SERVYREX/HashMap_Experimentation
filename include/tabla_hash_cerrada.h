@@ -52,7 +52,7 @@ private:
       return quadraticProbingString(clave, intento, largoTabla);
     }
     else {
-      cout << "Tipo de hash Invalido (Seleccione valores de 1-4)" << endl;
+      cout << "Tipo de hash Invalido (Seleccione valores de 1-8)" << endl;
       return 0;
     }
   }
@@ -220,6 +220,11 @@ public:
   
   double factorCarga(){
     return (double)(cantidadElementos + 1) / largoTabla;
+  }
+
+  size_t memoriaUsada() const {
+    return largoTabla * sizeof(NodoC<TipoClave, TipoValor>*) +
+      cantidadElementos * sizeof(NodoC<TipoClave, TipoValor>);
   }
 };
 

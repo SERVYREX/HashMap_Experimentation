@@ -248,5 +248,10 @@ public:
   double factorCarga(){
     return (double)(cantidadElementos + 1) / largoTabla;
   }
+
+  size_t memoriaUsada() const {
+    return largoTabla * sizeof(Nodo<TipoClave, TipoValor>*) +
+           cantidadElementos * sizeof(Nodo<TipoClave, TipoValor>);
+}
     
 };
