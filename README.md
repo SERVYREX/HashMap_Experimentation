@@ -31,7 +31,7 @@ HashMap_Experimentation/
 | `include/` | Cabeceras del proyecto con las implementaciones de los Hash Maps y utilidades. |
 | `src/` | Programas principales para la experimentación, bash scripts y análisis estadístico en Python. |
 | `Resultados Experimentales/` | Contiene los archivos CSV en crudo obtenidos al correr las pruebas (Creados al momento de la ejecucion). |
-| `Resultados Experimentales/Graficos/` | Contiene todas las visualizaciones finales (líneas, promedios, varianzas). |
+| `Graficos/` | Contiene todas las visualizaciones finales (líneas, promedios, varianzas). |
 
 ---
 
@@ -42,8 +42,8 @@ Consiste en registros parseados desde el archivo `auspol2019.csv`. Obtenido de: 
 
 | Dato utilizado | Tipo | Finalidad |
 |----------------|------|-----------|
-| `user_id` | Numérico (`unsigned long long`) | Evaluar la eficiencia de las funciones hash con números muy grandes. |
-| `user_screen_name` | Texto (`string`) | Evaluar la eficiencia de las funciones hash con cadenas de caracteres y su transformación matemática a índices. |
+| `user_id` | Numérico | Evaluar la eficiencia de las funciones hash con tipos dedatos numericos. |
+| `user_screen_name` | Texto | Evaluar la eficiencia de las funciones hash con cadenas de caracteres y su transformación matemática a índices. |
  
 ---
 
