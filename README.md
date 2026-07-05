@@ -44,7 +44,25 @@ Consiste en registros parseados desde el archivo `auspol2019.csv`. Obtenido de: 
 |----------------|------|-----------|
 | `user_id` | Numérico | Evaluar la eficiencia de las funciones hash con tipos dedatos numericos. |
 | `user_screen_name` | Texto | Evaluar la eficiencia de las funciones hash con cadenas de caracteres y su transformación matemática a índices. |
- 
+
+> **Observación:** Si bien el volumen del dataset utilizado en algunas iteraciones o los IDs en crudo pueden ser relativamente pequeños, toda la implementación y el manejo de tipos genéricos en C++ utilizan `unsigned long long`. Esto se diseñó intencionalmente para garantizar la escalabilidad y manejar correctamente los casos borde de claves numéricas extraordinariamente grandes sin sufrir overflow durante las operaciones matemáticas del Hash.
+
+---
+
+## Manejo de Hashing y Colisiones
+
+Para procesar e indexar tanto datos numéricos (IDs) como texto (Nombres de usuario), se implementaron los siguientes algoritmos que se encuentran en el archivo `funciones_hash.h`:
+
+### 1. Funciones Hash (Matemáticas Base)
+- **Hash por Módulo:** Utiliza el operador módulo tradicional `(clave % largoTabla)`. En el caso de los Strings, aplica primero un *Polynomial Rolling Hash*, iterando por cada caracter y acumulándolo sobre una base multiplicadora prima (31).
+- **Hash por Multiplicación (Razón Áurea):** Multiplica la clave (o el valor polinomial del string) por la constante matemática áurea para 64 bits (`11400714819323198485ULL`). Esto redistribuye los bits y genera pseudo-aleatoriedad para evitar aglomeraciones antes de aplicar el módulo final.
+
+### 2. Resolución de Colisiones (Hash Cerrado / Open Addressing)
+Cuando dos valores distintos resultan en el mismo índice, se utilizan estrategias de sondeo iterativo (`intento`):
+- **Linear Probing (Sondeo Lineal):** Suma linealmente el intento iterativo al hash original: `(Hash + intento) % largoTabla`.
+- **Quadratic Probing (Sondeo Cuadrático):** Suma el cuadrado del intento para saltar dinámicamente y disminuir los cúmulos de colisiones primarios: `(Hash + intento²) % largoTabla`.
+- **Double Hashing (Doble Hash):** Emplea una **segunda función Hash totalmente independiente**. Por ejemplo, para números usa la resta sobre un número primo (`saltoPrimo - (clave % saltoPrimo)`), y para strings varía la constante base a 37. Calcula la nueva posición con: `(Hash1 + intento * Hash2) % largoTabla`.
+
 ---
 
 ## include
