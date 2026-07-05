@@ -11,6 +11,8 @@ SALIDA2="../Resultados Experimentales/resultadosHashCerrado.csv"
 SALIDA3="../Resultados Experimentales/resultadosHashSTL.csv"
 # Encabezado
 echo "número_experimento;dataset;tipo_hash;cantidad_consultas;tiempo_ejecucion" > "$SALIDA"
+echo "número_experimento;dataset;tipo_hash;cantidad_consultas;tiempo_ejecucion" > "$SALIDA2"
+echo "número_experimento;dataset;tipo_hash;cantidad_consultas;tiempo_ejecucion" > "$SALIDA3"
 
 ejecutar(){
     local exe_path=$1
@@ -27,7 +29,7 @@ ejecutar(){
             [[ -z "$estructura" ]] && continue
 
             # Escribir en el CSV
-            echo "${exp};TweetsAuspol2019;${estructura};${cantidad};${tiempo}" >> "$SALIDA"
+            echo "${exp};TweetsAuspol2019;${estructura};${cantidad};${tiempo}" >> "$salida"
 
 	done
     done
