@@ -113,8 +113,8 @@ private:
   
 public:
 
-  TablaHashCerrada() : largoTabla(1009), cantidadElementos(0), tabla(1009) {
-    saltoPrimo = primoMenor(1009);
+  TablaHashCerrada() : largoTabla(2027), cantidadElementos(0), tabla(2027) {
+    saltoPrimo = primoMenor(2027);
   }
 
   bool insertar(const TipoClave & clave, const TipoValor& valor){
