@@ -96,10 +96,16 @@ plt.savefig("../Resultados Experimentales/Graficos/graficoTiempoEjecucionHashCer
 #Cargamos los datos 
 df_stl = pd.read_csv("../Resultados Experimentales/resultadosHashSTL.csv", sep = ";")
 
+# Hacemos explícita la comparación entre User ID y Username renombrando los labels
+df_stl['tipo_hash'] = df_stl['tipo_hash'].replace({
+    'unorderedMapSTL_ID': 'User ID',
+    'unorderedMapSTL_userName': 'Username'
+})
+
 plt.figure(figsize = (10,6))
 sns.lineplot(data = df_stl, x = 'cantidad_consultas', y = 'tiempo_ejecucion', hue = 'tipo_hash', marker = 'o', errorbar = 'sd')
 plt.ylim(0.01, 0.5)
-plt.title("Comparativa Tiempo Ejecucion HashMap STL")
+plt.title("Comparativa Tiempo Ejecucion HashMap STL (User ID vs Username)")
 plt.xlabel("Cantidad de Consultas", fontsize = 12)
 plt.ylabel("Tiempo Ejecucion (segundos)", fontsize = 12)
 plt.legend(title = "Tipo de Hash", loc = 'upper left')

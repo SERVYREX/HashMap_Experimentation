@@ -11,9 +11,12 @@ int main(){
 
   //Instancia mapa de STL
 
-  unordered_map<unsigned long long, int> tweetsCount;
-
+  unordered_map<unsigned long long, int> tweetsCountID;
+  unordered_map<string,int> tweetsCountUserName;
+  
   //Llenamos la tabla hash con los datos
-  cargarUsuariosDesdeCSV(data, tweetsCount, false, "unorderedMapSTL");
-
+  cargarUsuariosDesdeCSV(data, tweetsCountID, false, "unorderedMapSTL_ID");
+  cargarUsuariosDesdeCSV(data, tweetsCountUserName, true,"unorderedMapSTL_userName");
+    
+ 
 }
