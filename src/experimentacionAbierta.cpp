@@ -15,12 +15,12 @@ int main(){
   //4 instancias de tablas con hashing abierto con 2 funciones hash distintas para cada tipo de clave
   
   //Tabla que usa user_id como clave
-  TablaHashAbierta<unsigned long long, int, int> hashAbierto1(180000);
-  TablaHashAbierta<unsigned long long, int, int, 2> hashAbierto2(180000);
+  TablaHashAbierta<unsigned long long, int, int> hashAbierto1(2027);
+  TablaHashAbierta<unsigned long long, int, int, 2> hashAbierto2(2027);
 
   //Tabla que usa user_screen_name como clave
-  TablaHashAbierta<string, int, int, 3> hashAbierto3(180000);
-  TablaHashAbierta<string, int, int, 4> hashAbierto4(180000);
+  TablaHashAbierta<string, int, int, 3> hashAbierto3(2027);
+  TablaHashAbierta<string, int, int, 4> hashAbierto4(2027);
 
   //Construccion de la tabla hash abierta
   
